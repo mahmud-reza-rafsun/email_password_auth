@@ -1,9 +1,36 @@
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../firebase/firebase__init";
+import { useState } from "react";
+
 const SignUp = () => {
+  const [error, setError] = useState("");
   const handleSignUp = (e) => {
     e.preventDefault();
     const email = e.target.email.value;
     const password = e.target.password.value;
     console.log(email, password);
+    // create user with email and password
+    createUserWithEmailAndPassword(auth, email, password)
+      .then((user) => {
+        console.log(user.user);
+      })
+      .catch((error) => {
+        console.log("Error", error.message);
+      });
+    // reset error
+    setError("");
+    //  password validition
+    if (password.length < 6) {
+      setError("Password al least 6 character or longer");
+    }
+    // expresion validation
+    var regularEx = /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{6,16}$/;
+    if (!regularEx.test(password))
+      [
+        setError(
+          "Use a Uppercase and a Lowercase and a special chacrater and number"
+        ),
+      ];
   };
   return (
     <div className="hero bg-base-200 min-h-[60vh] rounded-xl">
@@ -45,6 +72,7 @@ const SignUp = () => {
             <div className="form-control mt-6">
               <button className="btn btn-primary">Login</button>
             </div>
+            {error && <p className="text-red-500">{error}</p>}
           </form>
         </div>
       </div>
