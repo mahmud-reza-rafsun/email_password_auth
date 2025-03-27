@@ -1,20 +1,25 @@
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../firebase/firebase__init";
+import { useState } from "react";
 
 const Login = () => {
+  const [success, setSuccess] = useState(false);
   const handleLogin = (e) => {
     e.preventDefault();
     const email = e.target.email.value;
     const password = e.target.password.value;
     console.log(email, password);
-
+    // reset error
+    setUser(false);
     // create users
-    createUserWithEmailAndPassword(auth, email, password)
+    signInWithEmailAndPassword(auth, email, password)
       .then((user) => {
         console.log(user.user);
+        setUser(true);
       })
       .catch((error) => {
         console.log(error.message);
+        setUser(false);
       });
   };
   return (
@@ -62,6 +67,7 @@ const Login = () => {
             <div className="form-control mt-6">
               <button className="btn btn-success">Login</button>
             </div>
+            {success && <p className="text-green-500">Login successful.</p>}
           </form>
         </div>
       </div>
